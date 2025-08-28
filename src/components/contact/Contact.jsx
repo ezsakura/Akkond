@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from 'emailjs-com';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -14,10 +15,16 @@ const ContactSection = () => {
     });
   };
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Здесь будет логика отправки формы
-    console.log('Форма отправлена:', formData);
+    emailjs.sendForm('service_w260ctj', 'template_cjlrj28', e.target, 'mqcCry4eHBXeVpIzs')
+    .then((result) => {
+      alert('Сообщение отправлено!');
+      onClose();
+    }, (error) => {
+      alert('Произошла ошибка. Попробуйте еще раз.');
+    });
   };
 
   return (

@@ -42,8 +42,8 @@ const Header = () => {
           <nav className="hidden lg:flex items-center space-x-8">
             <a href="#" className="text-gray-300 hover:text-white transition-colors font-medium">Главная</a>
             <a href="#services" className="text-gray-300 hover:text-white transition-colors font-medium">Услуги</a>
-            <a href="#portfolio" className="text-gray-300 hover:text-white transition-colors font-medium">Портфолио</a>
-            <a href="#about" className="text-gray-300 hover:text-white transition-colors font-medium">Обо мне</a>
+            <a href="#portfolio" className="text-gray-300 hover:text-white transition-colors font-medium">Мои работы</a>
+            <a href="#about" className="text-gray-300 hover:text-white transition-colors font-medium">Опыт и образование</a>
             <a href="#contact" className="text-gray-300 hover:text-white transition-colors font-medium">Контакты</a>
           </nav>
 
@@ -53,7 +53,7 @@ const Header = () => {
               href="#contact" 
               className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all hover:from-blue-600 hover:to-purple-700"
             >
-              Обсудить проект
+              Связаться
             </a>
           </div>
 
