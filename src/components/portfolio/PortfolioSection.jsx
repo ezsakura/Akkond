@@ -16,22 +16,22 @@ const PortfolioSection = () => {
       image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
     },
     {
-      title: "Мобильное приложение",
+      title: "Test",
       category: "React Native",
       image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
     },
     {
-      title: "Панель управления",
+      title: "Test управления",
       category: "Dashboard",
       image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
     },
     {
-      title: "Блог платформа",
+      title: "Test платформа",
       category: "Content Management",
       image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
     },
     {
-      title: "Лендинг страница",
+      title: "Test страница",
       category: "Marketing",
       image: "https://images.unsplash.com/photo-1526947425960-945c6e72858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
     }
