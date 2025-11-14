@@ -16,105 +16,182 @@ const Modal = ({ isOpen, onClose }) => {
     });
   };
 
+  // Notification component
+  const Notification = ({ message, type, onClose }) => {
+    return (
+      <div
+        className={`
+          fixed top-6 right-6 z-[1100] 
+          px-6 py-4 rounded-lg shadow-lg 
+          text-white font-medium
+          transition-all duration-500
+          ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}
+          animate-slideIn
+        `}
+        style={{ minWidth: '220px' }}
+      >
+        <div className="flex items-center justify-between gap-4">
+          <span>{message}</span>
+          <button
+            className="ml-4 text-white text-lg font-bold hover:text-gray-200 transition"
+            onClick={onClose}
+            aria-label="Закрыть уведомление"
+            type="button"
+          >
+            &times;
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Tailwind animation (add to your global CSS if not present)
+  // .animate-slideIn {
+  //   animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  // }
+  // @keyframes slideInRight {
+  //   0% { transform: translateX(120%); opacity: 0; }
+  //   100% { transform: translateX(0); opacity: 1; }
+  // }
+
+  // Notification state and helpers
+  const [notification, setNotification] = useState({
+    show: false,
+    message: '',
+    type: 'success'
+  });
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification(n => ({ ...n, show: false }));
+    }, 3000);
+  };
+
+  const closeNotification = () => {
+    setNotification(n => ({ ...n, show: false }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     emailjs.sendForm('service_w260ctj', 'template_cjlrj28', e.target, 'mqcCry4eHBXeVpIzs')
-    .then((result) => {
-      alert('Сообщение отправлено!');
-      onClose();
-    }, (error) => {
-      alert('Произошла ошибка. Попробуйте еще раз.');
-    });
+    .then(
+      result => {
+        showNotification('Сообщение отправлено!', 'success');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => {
+          onClose();
+        }, 1200);
+      },
+      error => {
+        showNotification('Произошла ошибка. Попробуйте еще раз.', 'error');
+      }
+    );
 };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm">
-      <div className="relative w-full max-w-md bg-gray-800 bg-opacity-90 backdrop-blur-md rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
-        {/* Декоративные элементы */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-purple-500 rounded-full mix-blend-soft-light filter blur-3xl opacity-30"></div>
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-500 rounded-full mix-blend-soft-light filter blur-3xl opacity-30"></div>
-        
-        {/* Заголовок и кнопка закрытия */}
-        <div className="p-6 border-b border-gray-700">
-          <h2 className="text-2xl font-bold text-white">
-            Обсудим ваш проект?
-          </h2>
-        </div>
+  <div
+    className="fixed inset-0 w-screen h-screen bg-black/50 flex items-center justify-center z-[1000] animate-fadeIn"
+    onClick={onClose}
+  >
+    {/* Notification */}
+    {notification.show && (
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        onClose={closeNotification}
+      />
+    )}
 
-        {/* Форма */}
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                Ваше имя
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="Как к вам обращаться?"
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="your.email@example.com"
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                Сообщение
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                rows="4"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                placeholder="Расскажите о вашем проекте..."
-                required
-              ></textarea>
-            </div>
-          </div>
-
-          {/* Кнопки действия */}
-          <div className="flex gap-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-3 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-600 transition-colors"
-            >
-              Отмена
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all hover:from-blue-600 hover:to-purple-700"
-            >
-              Отправить
-            </button>
-          </div>
-        </form>
-      </div>
+    <div
+      className="relative bg-white rounded-2xl shadow-2xl px-8 pt-9 pb-7 min-w-[340px] max-w-[90vw] min-h-[320px] animate-modalPop"
+      onClick={e => e.stopPropagation()}
+    >
+      <button
+        className="absolute top-4.5 right-4.5 bg-transparent border-none text-[1.7rem] cursor-pointer text-gray-400 hover:text-gray-900 transition-colors"
+        onClick={onClose}
+        aria-label="Закрыть"
+        type="button"
+      >
+        &times;
+      </button>
+      <h2 className="mb-4 font-bold text-[1.5rem] text-center text-gray-800 tracking-wide">
+        Отправить сообщение
+      </h2>
+      <form
+        className="flex flex-col gap-2"
+        onSubmit={handleSubmit}
+      >
+        <label htmlFor="name" className="font-medium mb-1">
+          Имя
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Ваше имя"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full px-3 py-2 mb-3 border border-gray-200 rounded-md text-base bg-gray-50 focus:border-indigo-500 focus:outline-none transition"
+        />
+        <label htmlFor="email" className="font-medium mb-1">
+          Email
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Ваш email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full px-3 py-2 mb-3 border border-gray-200 rounded-md text-base bg-gray-50 focus:border-indigo-500 focus:outline-none transition"
+        />
+        <label htmlFor="message" className="font-medium mb-1">
+          Сообщение
+        </label>
+        <textarea
+          id="message"
+          name="message"
+          placeholder="Ваше сообщение"
+          rows={5}
+          value={formData.message}
+          onChange={handleChange}
+          required
+          className="w-full px-3 py-2 mb-4 border border-gray-200 rounded-md text-base bg-gray-50 focus:border-indigo-500 focus:outline-none transition resize-none"
+        />
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-indigo-500 to-cyan-400 text-white rounded-md py-2 font-semibold text-lg w-full transition hover:from-cyan-400 hover:to-indigo-500"
+        >
+          Отправить
+        </button>
+      </form>
     </div>
-  );
+    {/* Animations for fadeIn and modalPop */}
+    <style>
+      {`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s;
+        }
+        @keyframes modalPop {
+          0% { transform: scale(0.8); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-modalPop {
+          animation: modalPop 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+      `}
+    </style>
+  </div>
+  );  
 };
-
+  
 export default Modal;

@@ -1,4 +1,9 @@
+import React, { useState, useRef, useEffect } from "react";
+
 const PortfolioSection = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeTimeoutRef = useRef(null);
+
   const projects = [
     {
       title: "Корпоративный сайт",
@@ -31,6 +36,77 @@ const PortfolioSection = () => {
       image: "https://images.unsplash.com/photo-1526947425960-945c6e72858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
     }
   ];
+
+  // Модальное окно
+  const Modal = ({ isOpen, onClose }) => {
+    useEffect(() => {
+      if (isOpen) {
+        closeTimeoutRef.current = setTimeout(() => {
+          onClose();
+        }, 2000);
+      }
+      return () => {
+        if (closeTimeoutRef.current) {
+          clearTimeout(closeTimeoutRef.current);
+        }
+      };
+    }, [isOpen, onClose]);
+
+    if (!isOpen) return null;
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-fadeIn"
+        onClick={onClose}
+      >
+        <div
+          className="bg-white rounded-2xl shadow-2xl px-8 py-7 min-w-[300px] max-w-[90vw] animate-modalPop relative"
+          onClick={e => e.stopPropagation()}
+        >
+          <button
+            className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-gray-900 transition-colors"
+            onClick={onClose}
+            aria-label="Закрыть"
+            type="button"
+          >
+            &times;
+          </button>
+          <div className="text-center">
+            <h2 className="text-xl font-bold mb-2 text-gray-800">Данный раздел еще в разработке</h2>
+            <p className="text-gray-600">Пожалуйста, зайдите позже!</p>
+          </div>
+        </div>
+        <style>
+          {`
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            .animate-fadeIn {
+              animation: fadeIn 0.3s;
+            }
+            @keyframes modalPop {
+              0% { transform: scale(0.8); opacity: 0; }
+              100% { transform: scale(1); opacity: 1; }
+            }
+            .animate-modalPop {
+              animation: modalPop 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+            }
+          `}
+        </style>
+      </div>
+    );
+  };
+
+  const handleShowAllClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+  };
 
   return (
     <section id="portfolio" className="py-20 bg-gray-900">
@@ -66,11 +142,15 @@ const PortfolioSection = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button className="px-8 py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300">
+          <button
+            className="px-8 py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
+            onClick={handleShowAllClick}
+          >
             Смотреть все работы
           </button>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </section>
   );
 };
